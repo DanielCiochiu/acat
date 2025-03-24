@@ -1,0 +1,215 @@
+// Theme toggle button styling
+theme-toggle-button {
+    cursor: pointer;
+    margin-right: 10px;
+    
+    .theme-toggle {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 0;
+    }
+    
+    .sky {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #87CEEB;
+      transition: background-color 0.5s;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    .sun-container {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      top: 12px;
+      left: 12px;
+      transition: transform 0.5s, opacity 0.5s;
+    }
+    
+    .sun {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: #FFD700;
+      border-radius: 50%;
+      box-shadow: 0 0 7px rgba(255, 215, 0, 0.6);
+    }
+    
+    .moon {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: #E6E6FA;
+      border-radius: 50%;
+      top: 12px;
+      left: 12px;
+      transform: translateX(40px);
+      opacity: 0;
+      transition: transform 0.5s, opacity 0.5s;
+      box-shadow: 0 0 4px #E6E6FA;
+    }
+    
+    .cute-cloud {
+      position: absolute;
+      background: white;
+      border-radius: 8px;
+      opacity: 0.9;
+      transition: opacity 0.5s;
+    }
+    
+    .cloud-body {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+    
+    /* First cute cloud */
+    .cute-cloud1 {
+      width: 14px;
+      height: 7px;
+      top: 8px;
+      left: 4px;
+    }
+    
+    .cute-cloud1 .cloud-body:nth-child(1) {
+      width: 5px;
+      height: 5px;
+      top: -3px;
+      left: 2px;
+    }
+    
+    .cute-cloud1 .cloud-body:nth-child(2) {
+      width: 7px;
+      height: 7px;
+      top: -4px;
+      left: 5px;
+    }
+    
+    /* Second cute cloud */
+    .cute-cloud2 {
+      width: 12px;
+      height: 6px;
+      top: 18px;
+      left: 24px;
+    }
+    
+    .cute-cloud2 .cloud-body:nth-child(1) {
+      width: 5px;
+      height: 5px;
+      top: -3px;
+      left: 1px;
+    }
+    
+    .cute-cloud2 .cloud-body:nth-child(2) {
+      width: 6px;
+      height: 6px;
+      top: -3px;
+      left: 5px;
+    }
+    
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    
+    .star1 {
+      width: 1px;
+      height: 1px;
+      top: 8px;
+      left: 27px;
+    }
+    
+    .star2 {
+      width: 1.5px;
+      height: 1.5px;
+      top: 14px;
+      left: 30px;
+    }
+    
+    .star3 {
+      width: 1px;
+      height: 1px;
+      top: 20px;
+      left: 4px;
+    }
+    
+    .star4 {
+      width: 1.5px;
+      height: 1.5px;
+      top: 10px;
+      left: 8px;
+    }
+    
+    .star5 {
+      width: 1px;
+      height: 1px;
+      top: 26px;
+      left: 10px;
+    }
+  }
+  
+  // Theme styles
+  :root {
+    // Light theme (default)
+    --body-background: #fff;
+    --text-color: #333;
+    --hover-buttons: #eee;
+    --menu-shadow: 0 8px 11px -6px rgba(0, 0, 0, 0.12);
+    --drawer-shadow: 4px 8px 8px 0 rgba(0, 0, 0, 0.12);
+    --sepparator: solid 1px #ddd;
+    --active-opacity: .6;
+    --body-font: normal 400 14px "Roboto", sans-serif;
+    --category-font: normal 600 16px "Roboto", sans-serif;
+  }
+  
+  // Dark theme
+  html.dark-theme {
+    --body-background: #222;
+    --text-color: #f0f8ff;
+    --hover-buttons: #333;
+    --menu-shadow: 0 8px 11px -6px rgba(0, 0, 0, 0.5);
+    --drawer-shadow: 4px 8px 8px 0 rgba(0, 0, 0, 0.5);
+    --sepparator: solid 1px #444;
+    
+    theme-toggle-button {
+      .sky {
+        background: #0a1128;
+      }
+      
+      .sun-container {
+        transform: translateX(-40px) rotate(180deg);
+        opacity: 0;
+      }
+      
+      .moon {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      
+      .cute-cloud {
+        opacity: 0.2;
+      }
+      
+      .star {
+        opacity: 0.8;
+      }
+    }
+  }
+  
+  // Update body styles to use CSS variables
+  body {
+    background-color: var(--body-background);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+  }

@@ -1,8 +1,9 @@
-import { AppModule, AppModules, ModuleName, ModuleNames } from '../AppModules.ts';
+import { AppModules, ModuleName, ModuleNames } from '../AppModules.ts'; 
 import { Application } from '../types/Application.ts';
 import { AppLayout } from './AppLayout.ts';
 import { Automata } from '../types/Automata.ts';
 import { DrawerMenu } from '../modules/menu/hamburger-menu/views/DrawerMenu.ts';
+import { ContextMenu } from '../modules/menu/context-menu/ContextMenu.ts';
 
 /**
  * This is the abstract application implementation that shadows a lot of under the hood logic
@@ -10,7 +11,7 @@ import { DrawerMenu } from '../modules/menu/hamburger-menu/views/DrawerMenu.ts';
  */
 export class AbstractApplication implements Application {
     // holds the list of modules instantiated within the application
-    protected modules: Map<ModuleName, AppModule> = new Map();
+    protected modules: Map<ModuleName, InstanceType<(typeof AppModules)[ModuleName]>> = new Map();
 
     // returns access to the layout UI component
     protected layout: AppLayout | null = null;
@@ -18,12 +19,13 @@ export class AbstractApplication implements Application {
     // references the running automata
     protected activeAutomata: Automata | null = null;
 
+    // Reference to the theme toggle button to avoid losing it
+    protected themeToggleButton: HTMLElement | null = null;
+
     /**
      * The constructor receives the root element in which it should render its components
      */
-    constructor(protected root: HTMLElement) {
-        // doing nothing as the root property is already stored on this instances
-    }
+    constructor(protected root: HTMLElement) {}
 
     /**
      * Returns access to a specific module identified by its name
@@ -36,7 +38,13 @@ export class AbstractApplication implements Application {
      * Runs the application and initializez the modules
      */
     run() {
-        // instantiating the modules
+        // Store reference to ThemeToggleButton when the app starts
+        this.themeToggleButton = this.getLayout().contextMenu.querySelector('theme-toggle-button');
+
+        if (!this.themeToggleButton) {
+            this.themeToggleButton = document.createElement('theme-toggle-button');
+            this.getLayout().contextMenu.appendChild(this.themeToggleButton);
+        }
     }
 
     /**
@@ -56,8 +64,10 @@ export class AbstractApplication implements Application {
         this.clearBodyContent();
 
         this.activeAutomata = automata;
-        // updating the context menu with the new buttons
-        this.getModule(ModuleNames.ContextMenu)?.refreshToolbar(automata.getContextBar());
+
+        const contextMenu = this.getModule(ModuleNames.ContextMenu) as ContextMenu | null;
+        contextMenu?.refreshToolbar(automata.getContextBar());
+
         this.activeAutomata.runSimulation(this);
     }
 
@@ -68,18 +78,26 @@ export class AbstractApplication implements Application {
         return this.activeAutomata;
     }
 
+
     /**
-     * Emptying the body content but keeping the drawer menu
+     * Emptying the body content but keeping the drawer menu and theme toggle button
      */
     protected clearBodyContent() {
         const body = this.getLayout().appBody;
-        for (let i = 0, len = body.children.length; i < len; i++) {
-            // sipping deleting the drawer menu
-            if (body.children[i] instanceof DrawerMenu) {
+        for (let i = body.children.length - 1; i >= 0; i--) {
+            if (
+                body.children[i] instanceof DrawerMenu ||
+                body.children[i] === this.themeToggleButton
+            ) {
                 continue;
             }
             // removing the child
             body.children[i].remove();
+        }
+
+        // Reattach themeToggleButton if it was removed
+        if (this.themeToggleButton && !this.themeToggleButton.isConnected) {
+            this.getLayout().contextMenu.appendChild(this.themeToggleButton);
         }
     }
 }

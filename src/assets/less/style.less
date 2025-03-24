@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-
-// declaring global colors in this section, who knows... maybe we'll make it themable
+@import '../../modules/menu/theme-toggle/less/theme-toggle-button.less'; // Corrected import path
+// declaring global colors in this section, who knows... maybe we'll make it themable 
 :root {
     // colors
     --body-background: #fff;
@@ -83,4 +83,14 @@ body {
       flex: 1;
     }
   }
+
+  .top-ctx-menu {
+    display: flex;
+    align-items: center;
+
+    theme-toggle-button {
+        margin-left: 10px; 
+    }
+}
+
 }
