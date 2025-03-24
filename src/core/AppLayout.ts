@@ -1,10 +1,15 @@
 import { CustomElement } from './CustomElement.ts';
 import { html } from '../helpers/dom.ts';
+import { ThemeToggleButton } from '../modules/menu/theme-toggle/ThemeToggleButton.ts';
 
 /**
  * The top level layout class that handles creating the application basic elements
  * Also, it returns access to these elements
  */
+if (!customElements.get(ThemeToggleButton.element)) {
+    customElements.define(ThemeToggleButton.element, ThemeToggleButton);
+}
+
 export class AppLayout extends CustomElement {
     // the name of the element bound to this component
     static element: string = 'app-layout';
@@ -43,11 +48,14 @@ export class AppLayout extends CustomElement {
                 <div class="top-logo"></div>
                 <div class="top-menu">
                     <div class="top-app-menu"></div>
-                    <div class="top-ctx-menu"></div>
+                    <div class="top-ctx-menu">
+                        <theme-toggle-button></theme-toggle-button> 
+                    </div>
                 </div>
             </div>
             <div class="app-body"></div>`;
     }
+    
 
     /**
      * Returns a child element of this component

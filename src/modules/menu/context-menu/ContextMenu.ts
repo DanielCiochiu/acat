@@ -18,6 +18,7 @@ export class ContextMenu implements Module {
      */
     initialize(app: Application): void {
         this.app = app;
+
         this.app.getLayout().contextMenu.appendChild(
             new DefaultToolbar({
                 buttons: [
@@ -35,8 +36,18 @@ export class ContextMenu implements Module {
     refreshToolbar(newToolbar: DefaultToolbar) {
         const container = this.app?.getLayout().contextMenu;
         if (container) {
+            // Save reference to ThemeToggleButton
+            const themeToggle = container.querySelector('theme-toggle-button');
+
+            // Clear all elements
             removeAllChildren(container);
+
             container.appendChild(newToolbar);
+
+            // Reattach the ThemeToggleButton if it exists
+            if (themeToggle) {
+                container.appendChild(themeToggle);
+            }
         }
     }
 }

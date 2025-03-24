@@ -3,6 +3,7 @@ import { Application } from '../../../types/Application.ts';
 import { ModuleNames } from '../../../AppModules.ts';
 import { DrawerItem } from '../../menu/hamburger-menu/views/DrawerItem.ts';
 import { DFAAutomata } from './dfa/DFAAutomata.ts';
+import { HamburgerMenu } from '../../menu/hamburger-menu/HamburgerMenu.ts';
 
 /**
  * The deterministic finite automata simulation
@@ -20,12 +21,22 @@ export class DFASimulation extends AbstractFiniteSimulation {
         super.initialize(app);
 
         // subscribing this simulation to the finite automata category
-        const category = app.getModule(ModuleNames.HamburgerMenu)?.getCategory(AbstractFiniteSimulation.menuId);
+        const module = app.getModule(ModuleNames.HamburgerMenu);
 
-        // ensuring the category is defined
-        if (category === null) return;
+        // Verificăm dacă modulul este de tip HamburgerMenu
+        if (module instanceof HamburgerMenu) {
+            const category = module.getCategory(AbstractFiniteSimulation.menuId);
 
-        category?.addItem(new DrawerItem({ displayName: 'Deterministic Finite Automata', onclick: () => this.simulate() }));
+            // dacă categoria există, adaugă un item în meniu
+            if (category) {
+                category.addItem(
+                    new DrawerItem({
+                        displayName: 'Deterministic Finite Automata',
+                        onclick: () => this.simulate(),
+                    })
+                );
+            }
+        }
     }
 
     /**
@@ -33,7 +44,12 @@ export class DFASimulation extends AbstractFiniteSimulation {
      */
     simulate(): void {
         // hiding the module before proceeding with the automation
-        this.app?.getModule(ModuleNames.HamburgerMenu)?.onToggleMenu();
+        const module = this.app?.getModule(ModuleNames.HamburgerMenu);
+
+        if (module instanceof HamburgerMenu) {
+            module.onToggleMenu();
+        }
+
         // calling the simulation on application instance
         this.app?.simulateAutomata(new DFAAutomata());
     }
