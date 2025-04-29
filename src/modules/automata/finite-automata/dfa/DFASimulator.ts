@@ -2,6 +2,7 @@ import { Network, DataSet, Node, Edge } from 'vis-network/standalone';
 import { DFAAutomata } from './DFAAutomata.ts';
 import { DFAMainView } from './views/DFAMainView.ts';
 import { DFAModel, State } from './DFAModel.ts';
+import { DropdownMenu } from '../../../../core/elements/DropdownMenu.ts';
 /**
  * Does the actual simulation of the Deterministic Finite Automata
  */
@@ -24,10 +25,15 @@ export class DFASimulator {
     protected currentIndex: number = 0;
     protected stepByStepActive: boolean = false;
 
+    protected DropdownMenu!: DropdownMenu;
+
+
     /**
      * The constructor receives the Automata instance
      */
-    constructor(protected automata: DFAAutomata) {}
+    constructor(protected automata: DFAAutomata) {
+        // Initialize the menu with options
+    }
 
     /**
      * Returns access to the DFA Model
@@ -63,13 +69,69 @@ export class DFASimulator {
                 addNode: this.nodeAdded,
             },
         });
+        this.DropdownMenu = new DropdownMenu({
+            items: [
+                {
+                    label: 'Initial',
+                    onClick: () => {
+                        console.log('Initial state selected.');
+                        const selectedNodeId = this.network?.getSelectedNodes()[0];
+                        if (!selectedNodeId) {
+                            console.error('No node is selected.');
+                            return;
+                        }
 
-        /**
-         * Subscribing to select node event
-         */
-        this.network.on('selectNode', (node: Node) => {
-            console.log('Node selected:');
-            console.log(node);
+                        this.updateNodeState(String(selectedNodeId), '(Initial)', 'lightgreen', true, false);
+                    },
+                },
+                {
+                    label: 'Intermediate',
+                    onClick: () => {
+                        console.log('Intermediate state selected.');
+                        const selectedNodeId = this.network?.getSelectedNodes()[0];
+                        if (!selectedNodeId) {
+                            console.error('No node is selected.');
+                            return;
+                        }
+
+                        this.updateNodeState(String(selectedNodeId), '(Intermediate)', 'yellow', false, false);
+                    },
+                },
+                {
+                    label: 'Final',
+                    onClick: () => {
+                        console.log('Final state selected.');
+                        const selectedNodeId = this.network?.getSelectedNodes()[0];
+                        if (!selectedNodeId) {
+                            console.error('No node is selected.');
+                            return;
+                        }
+
+                        this.updateNodeState(String(selectedNodeId), '(Final)', 'lightblue', false, true);
+                    },
+                },
+            ],
+        });
+
+
+        /** * Subscribing to select node event */this.network.on('selectNode', (node: Node) => {
+            // @ts-ignore
+            const { x, y } = node.pointer.DOM;
+
+            console.log('Node selected at coordinates:');
+            console.log({ x, y });
+
+            // Position the DropdownMenu near the selected node
+            const dropdownElement = this.DropdownMenu as HTMLElement;
+            dropdownElement.style.position = 'absolute';
+            dropdownElement.style.left = `${x}px`;
+            dropdownElement.style.top = `${y}px`;
+            dropdownElement.style.display = 'block'; // Ensure the menu is visible
+
+            // Append the DropdownMenu to the DOM if not already added
+            if (!document.body.contains(dropdownElement)) {
+                document.body.appendChild(dropdownElement);
+            }
         });
     }
 
@@ -218,6 +280,28 @@ export class DFASimulator {
             this.stepByStepActive = false;
         }
     };
+    /**
+     * Invoked when the user clicks the reset button
+     */
+    private updateNodeState(selectedNodeId: string, labelSuffix: string, color: string, isInitial: boolean, isFinal: boolean) {
+        const state = this.model.getStateByName(selectedNodeId);
+        if (!state) {
+            console.error(`State with ID ${selectedNodeId} not found.`);
+            return;
+        }
+
+        // Update the state properties
+        state.initial = isInitial;
+        state.final = isFinal;
+
+        // Update the selected node in the network
+        this.network?.updateClusteredNode(selectedNodeId, {
+            label: `${state.name} ${labelSuffix}`,
+            color: color,
+        });
+
+        console.log(`State ${state.name} set to ${labelSuffix.trim()}.`);
+    }
 
     /**
      * Handler that will be invoked when a new node will be added
