@@ -4,10 +4,11 @@ import { HamburgerMenu } from './modules/menu/hamburger-menu/HamburgerMenu.ts';
 import { AppLogo } from './modules/menu/app-logo/AppLogo.ts';
 import { DFASimulation } from './modules/automata/finite-automata/DFASimulation.ts';
 import { Theme } from './modules/theme/theme.ts';
-import { OptimizingInaccessibleStatesSimulation } from './modules/automata/finite-automata/dfa/InaccessibleStates/OptimizingInaccessibleStatesSimulation.ts'; // Importăm noua simulare
+import { OptimizingInaccessibleStatesSimulation } from './modules/automata/finite-automata/dfa/InaccessibleStates/OptimizingInaccessibleStatesSimulation.ts';
 import { OptimizingInseparableStatesSimulation } from './modules/automata/finite-automata/dfa/InseparableStates/OptimizingInseparableStatesSimulation.ts';
 import { SystemInteraction } from './modules/system-interaction/SystemInteraction.ts';
 import { Localization } from './modules/localization/views/Localization.ts';
+import { SettingsService } from './modules/settings/SettingsService.ts';
 
 /**
  * Constant that hold the names of the modules
@@ -23,12 +24,17 @@ export const ModuleNames = {
     OptimizingInseparableStatesSimulation: 'optimizing-inseparable-states',
     SystemInteraction: 'system-interaction',
     Localization: 'localization',
+    // Add the Settings module name
+    Settings: 'settings',
 } as const;
 
 /**
  * Holds the list of all the modules this application loads
  */
 export const AppModules = {
+    // Important: Settings should be initialized before other modules
+    // that might depend on it during initialization
+    [ModuleNames.Settings]: SettingsService,
     [ModuleNames.Localization]: Localization,
     [ModuleNames.HamburgerMenu]: HamburgerMenu,
     [ModuleNames.AppLogo]: AppLogo,
@@ -36,10 +42,9 @@ export const AppModules = {
     [ModuleNames.ContextMenu]: ContextMenu,
     [ModuleNames.DeterministicFiniteAutomata]: DFASimulation,
     [ModuleNames.Theme]: Theme,
-    [ModuleNames.OptimizingInaccessibleStatesSimulation]: OptimizingInaccessibleStatesSimulation, // Adăugăm noua simulare
+    [ModuleNames.OptimizingInaccessibleStatesSimulation]: OptimizingInaccessibleStatesSimulation,
     [ModuleNames.OptimizingInseparableStatesSimulation]: OptimizingInseparableStatesSimulation,
     [ModuleNames.SystemInteraction]: SystemInteraction,
-
 } as const;
 
 /**
