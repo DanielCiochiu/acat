@@ -12,6 +12,7 @@ export abstract class CustomElement<T extends Record<string, any> = {}> extends 
     // override this name with the correct name of the element
     static element: string = 'missing-name';
 
+
     // @ts-ignore The constructor of this component which ensures it is registered in the customElements registry before being used
     constructor(protected props: T = {}) {
         // declaring the custom component as type of this component
@@ -46,4 +47,8 @@ export abstract class CustomElement<T extends Record<string, any> = {}> extends 
      * Returns the template for this element
      */
     abstract template(): string | null;
+
+    connectedCallback(): void {
+        // Placeholder for subclasses to override if needed
+    }
 }
