@@ -1,3 +1,4 @@
+import "./DropdownMenu.less";
 import { CustomElement } from '../CustomElement';
 
 interface DropdownMenuProps {
@@ -11,28 +12,15 @@ export class DropdownMenu extends CustomElement<DropdownMenuProps> {
         super(props);
 
         // Add event listener to toggle dropdown visibility
-        this.addEventListener('click', () => {
+        /*this.addEventListener('click', () => {
             const dropdown = this.querySelector('.dropdown-content');
             dropdown?.classList.toggle('show');
-        });
+        });*/
+
     }
 
     template(): string {
-        return `
-           <style>
-        .dropdown-button {
-            padding: 8px 16px;
-            cursor: pointer;
-            text-align: center; /* Corrected property */
-            border: 1px solid #ddd;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-        }
-        .dropdown-button:hover {
-            background-color: #f0f0f0;
-        }
-        </style>
-        <div class="dropdown">
+        return `<div class="dropdown">
             <div class="select">
                 ${this.props.items
                 .map(
@@ -58,6 +46,9 @@ export class DropdownMenu extends CustomElement<DropdownMenuProps> {
                 const menuItem = this.props.items[index];
                 if (menuItem && menuItem.onClick) {
                     menuItem.onClick();
+                    // const dropdown = this.querySelector('.dropdown-content');
+                    // dropdown?.classList.remove('show');
+                    this.remove();
                 }
             });
         });

@@ -108,6 +108,7 @@ export class DFASimulator {
                         }
 
                         this.updateNodeState(String(selectedNodeId), '(Final)', 'lightblue', false, true);
+
                     },
                 },
             ],
