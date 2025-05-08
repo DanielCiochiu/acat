@@ -8,6 +8,7 @@ import { OptimizingInaccessibleStatesSimulation } from './modules/automata/finit
 import { OptimizingInseparableStatesSimulation } from './modules/automata/finite-automata/dfa/InseparableStates/OptimizingInseparableStatesSimulation.ts';
 import { SystemInteraction } from './modules/system-interaction/SystemInteraction.ts';
 import { Localization } from './modules/localization/views/Localization.ts';
+import { SettingsModule } from './modules/app-settings/SettingsModule.ts';
 
 /**
  * Constant that hold the names of the modules
@@ -23,12 +24,14 @@ export const ModuleNames = {
     OptimizingInseparableStatesSimulation: 'optimizing-inseparable-states',
     SystemInteraction: 'system-interaction',
     Localization: 'localization',
+    SettingsModule: 'app-settings'
 } as const;
 
 /**
  * Holds the list of all the modules this application loads
  */
 export const AppModules = {
+    [ModuleNames.SettingsModule]: SettingsModule,
     [ModuleNames.Localization]: Localization,
     [ModuleNames.HamburgerMenu]: HamburgerMenu,
     [ModuleNames.AppLogo]: AppLogo,
