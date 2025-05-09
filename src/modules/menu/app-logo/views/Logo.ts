@@ -1,119 +1,110 @@
 import '../less/logo.less';
-
 import { CustomElement } from '../../../../core/CustomElement.ts';
 import { html } from '../../../../helpers/dom.ts';
 
 export class Logo extends CustomElement {
     static element = 'app-logo';
 
-    constructor() {
-        super();
-        this.updateTheme(); 
-        this.observeThemeChanges();
+    connectedCallback(): void {
+        window.addEventListener('load', () => {
+            const updateVisibility = () => {
+                const theme = document.documentElement.getAttribute("data-theme");
+                const isDark = theme === "dark";
+
+                // fețe
+                const faceLight = this.querySelectorAll('[data-role="face-light"]');
+                const faceDark  = this.querySelectorAll('[data-role="face-dark"]');
+                // stele
+                const stars     = this.querySelectorAll('[data-role="star"]');
+                // pernă
+                const pillow    = this.querySelectorAll('[data-role="pillow"]');
+
+                faceLight.forEach(el => (el as HTMLElement).style.display = isDark ? "none"   : "inline");
+                faceDark.forEach(el  => (el as HTMLElement).style.display = isDark ? "inline" : "none");
+                stars.forEach(el      => (el as HTMLElement).style.display = isDark ? "inline" : "none");
+                pillow.forEach(el     => (el as HTMLElement).style.display = isDark ? "inline" : "none");
+            };
+
+            updateVisibility();
+            new MutationObserver(updateVisibility)
+                .observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+        });
     }
 
-	 template(): string {
-        return this.getLightLogo(); 
+    template(): string {
+        return html`
+            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Stars (dark mode only) -->
+                <polygon data-role="star" style="display: none;"
+                         fill="white"
+                         points="0,-8 2.4,-2.4 8,-2.4 4,0 5.6,5.6 0,3 -5.6,5.6 -4,0 -8,-2.4 -2.4,-2.4"
+                         transform="translate(30,30)" />
+                <polygon data-role="star" style="display: none;"
+                         fill="white"
+                         points="0,-8 2.4,-2.4 8,-2.4 4,0 5.6,5.6 0,3 -5.6,5.6 -4,0 -8,-2.4 -2.4,-2.4"
+                         transform="translate(170,40)" />
+                <polygon data-role="star" style="display: none;"
+                         fill="white"
+                         points="0,-8 2.4,-2.4 8,-2.4 4,0 5.6,5.6 0,3 -5.6,5.6 -4,0 -8,-2.4 -2.4,-2.4"
+                         transform="translate(50,60)" />
+                <polygon data-role="star" style="display: none;"
+                         fill="white"
+                         points="0,-8 2.4,-2.4 8,-2.4 4,0 5.6,5.6 0,3 -5.6,5.6 -4,0 -8,-2.4 -2.4,-2.4"
+                         transform="translate(160,70)" />   
+
+                <!-- Hood -->
+                <path d="M50 80 Q100 10, 150 80 T150 160 Q100 190, 50 160 T50 80"
+                      fill="var(--svg-primary-fill)" stroke="var(--svg-primary-stroke)" stroke-width="4" />     
+
+                <!-- Cat Face -->
+                <circle cx="100" cy="100" r="40"
+                        fill="var(--svg-secondary-fill)" stroke="var(--svg-primary-stroke)" stroke-width="4" />
+
+                <!-- Cat Ears -->
+                <path transform="rotate(-20, 80, 75)" d="M70 75 L80 45 L90 75 Z"
+                      fill="var(--svg-primary-fill)" stroke="var(--svg-primary-stroke)" stroke-width="4" />
+                <path transform="rotate(20, 120, 75)" d="M130 75 L120 45 L110 75 Z"
+                      fill="var(--svg-primary-fill)" stroke="var(--svg-primary-stroke)" stroke-width="4" />
+
+                <!-- Glasses Frame -->
+                <rect x="75" y="90" width="20" height="15"
+                      stroke="var(--svg-primary-stroke)" stroke-width="3" fill="none" />
+                <rect x="105" y="90" width="20" height="15"
+                      stroke="var(--svg-primary-stroke)" stroke-width="3" fill="none" />
+                <line x1="95" y1="97" x2="105" y2="97"
+                      stroke="var(--svg-primary-stroke)" stroke-width="3" />
+
+                <!-- Face – Light mode -->
+                <circle cx="85" cy="100" r="5" fill="var(--svg-primary-fill)" data-role="face-light" />
+                <circle cx="115" cy="100" r="5" fill="var(--svg-primary-fill)" data-role="face-light" />
+                <circle cx="85" cy="100" r="2" fill="var(--svg-secondary-fill)" data-role="face-light" />
+                <circle cx="115" cy="100" r="2" fill="var(--svg-secondary-fill)" data-role="face-light" />
+                <ellipse cx="100" cy="122" rx="4" ry="5"
+                         stroke="var(--svg-primary-stroke)" stroke-width="3"
+                         fill="var(--svg-primary-fill)" data-role="face-light" />
+
+                <!-- Face – Dark mode -->
+                <path d="M80 100 Q85 95, 90 100"
+                      stroke="var(--svg-primary-fill)" stroke-width="2" fill="none" data-role="face-dark" />
+                <path d="M110 100 Q115 95, 120 100"
+                      stroke="var(--svg-primary-fill)" stroke-width="2" fill="none" data-role="face-dark" />
+                <line x1="96" y1="122" x2="104" y2="122"
+                      stroke="var(--svg-primary-stroke)" stroke-width="3" data-role="face-dark" />
+
+                <!-- Nose -->
+                <path d="M95 110 L100 115 L105 110 Z" fill="var(--svg-primary-fill)" />
+
+                <!-- Hood Opening -->
+                <path d="M60 90 Q100 50, 140 90 T140 150 Q100 170, 60 150 T60 90"
+                      fill="none" stroke="var(--svg-primary-stroke)" stroke-width="4" />
+
+                <!-- Whiskers -->
+                <line x1="60"  y1="115" x2="80"  y2="112" stroke="var(--svg-primary-stroke)" stroke-width="2" />
+                <line x1="60"  y1="120" x2="80"  y2="117" stroke="var(--svg-primary-stroke)" stroke-width="2" />
+                <line x1="60"  y1="125" x2="80"  y2="122" stroke="var(--svg-primary-stroke)" stroke-width="2" />
+                <line x1="140" y1="115" x2="120" y2="112" stroke="var(--svg-primary-stroke)" stroke-width="2" />
+                <line x1="140" y1="120" x2="120" y2="117" stroke="var(--svg-primary-stroke)" stroke-width="2" />
+                <line x1="140" y1="125" x2="120" y2="122" stroke="var(--svg-primary-stroke)" stroke-width="2" />
+            </svg>`;
     }
-
-    /**
-     * Returns the ACAT logo SVG content
-     * This SVG was generated by the SVG Illustration Generator GPT model (just browse for models and search for it)
-     */
-
-	getLightLogo(): string {
-		return html`<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<!-- Hood -->
-			<path d="M50 80 Q100 10, 150 80 T150 160 Q100 190, 50 160 T50 80" fill="black" stroke="black" stroke-width="4" />
-	
-			<!-- Cat Face -->
-			<circle cx="100" cy="100" r="40" fill="white" stroke="black" stroke-width="4" />
-	
-			<!-- Cat Ears -->
-			<path transform="rotate(-20, 80, 75)" d="M70 75 L80 45 L90 75 Z" fill="black" stroke="black" stroke-width="4" />
-			<path transform="rotate(20, 120, 75)" d="M130 75 L120 45 L110 75 Z" fill="black" stroke="black" stroke-width="4" />
-	
-			<!-- Glasses Frame -->
-			<rect x="75" y="90" width="20" height="15" stroke="black" stroke-width="3" fill="none" />
-			<rect x="105" y="90" width="20" height="15" stroke="black" stroke-width="3" fill="none" />
-			<line x1="95" y1="97" x2="105" y2="97" stroke="black" stroke-width="3" />
-	
-			<!-- Eyes -->
-			<circle cx="85" cy="100" r="5" fill="black" />
-			<circle cx="115" cy="100" r="5" fill="black" />
-			<circle cx="85" cy="100" r="2" fill="white" />
-			<circle cx="115" cy="100" r="2" fill="white" />
-	
-			<!-- Nose -->
-			<path d="M95 110 L100 115 L105 110 Z" fill="black" />
-	
-			<!-- Mouth -->
-			<ellipse cx="100" cy="122" rx="4" ry="5" stroke="black" stroke-width="3" fill="black" />
-	
-			<!-- Mustățile din stânga  -->
-			<line x1="60" y1="110" x2="80" y2="108" stroke="black" stroke-width="2" />
-			<line x1="60" y1="115" x2="80" y2="113" stroke="black" stroke-width="2" />
-			<line x1="60" y1="120" x2="80" y2="118" stroke="black" stroke-width="2" />
-	
-			<!-- Mustățile din dreapta  -->
-			<line x1="140" y1="110" x2="120" y2="108" stroke="black" stroke-width="2" />
-			<line x1="140" y1="115" x2="120" y2="113" stroke="black" stroke-width="2" />
-			<line x1="140" y1="120" x2="120" y2="118" stroke="black" stroke-width="2" />
-		</svg>`;
-	}
-	
-	getDarkLogo(): string {
-		return html`<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<!-- Hood -->
-			<path d="M50 80 Q100 10, 150 80 T150 160 Q100 190, 50 160 T50 80" fill="black" stroke="black" stroke-width="4" />
-	
-			<!-- Cat Face -->
-			<circle cx="100" cy="100" r="40" fill="white" stroke="black" stroke-width="4" />
-	
-			<!-- Cat Ears -->
-			<path transform="rotate(-20, 80, 75)" d="M70 75 L80 45 L90 75 Z" fill="black" stroke="black" stroke-width="4" />
-			<path transform="rotate(20, 120, 75)" d="M130 75 L120 45 L110 75 Z" fill="black" stroke="black" stroke-width="4" />
-	
-			<!-- Eyes (closed) -->
-			<line x1="77" y1="97" x2="93" y2="97" stroke="black" stroke-width="3" />
-			<line x1="107" y1="97" x2="123" y2="97" stroke="black" stroke-width="3" />
-	
-			<!-- ZZZ for sleeping effect -->
-			<text x="160" y="70" font-size="12" font-family="Arial" font-weight="bold" fill="black">Z</text>
-			<text x="170" y="60" font-size="14" font-family="Arial" font-weight="bold" fill="black">Z</text>
-			<text x="180" y="50" font-size="16" font-family="Arial" font-weight="bold" fill="black">Z</text>
-	
-			<!-- Nose -->
-			<path d="M95 110 L100 115 L105 110 Z" fill="black" />
-	
-			<!-- Mouth -->
-			<ellipse cx="100" cy="122" rx="4" ry="5" stroke="black" stroke-width="3" fill="black" />
-	
-			<!-- Mustățile din stânga  -->
-			<line x1="60" y1="110" x2="80" y2="108" stroke="black" stroke-width="2" />
-			<line x1="60" y1="115" x2="80" y2="113" stroke="black" stroke-width="2" />
-			<line x1="60" y1="120" x2="80" y2="118" stroke="black" stroke-width="2" />
-	
-			<!-- Mustățile din dreapta  -->
-			<line x1="140" y1="110" x2="120" y2="108" stroke="black" stroke-width="2" />
-			<line x1="140" y1="115" x2="120" y2="113" stroke="black" stroke-width="2" />
-			<line x1="140" y1="120" x2="120" y2="118" stroke="black" stroke-width="2" />
-		</svg>`;
-	}
-	
-	
-    updateTheme = () => {
-        const isDark = document.documentElement.classList.contains('dark-theme') || 
-                       window.matchMedia('(prefers-color-scheme: dark)').matches;
-        this.innerHTML = isDark ? this.getDarkLogo() : this.getLightLogo();
-    };
-
-    observeThemeChanges() {
-		const observer = new MutationObserver(() => this.updateTheme());
-		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-	
-		// Listen for theme change event from ThemeButton
-		document.addEventListener('theme-changed', this.updateTheme);
-	}
-	
 }

@@ -1,5 +1,13 @@
 import { defineConfig } from 'vite';
+import path from 'path';
 
 export default defineConfig({
-    plugins: [],
+  css: {
+    preprocessorOptions: {
+      less: {
+        paths: [path.resolve(__dirname, 'src')],
+      },
+    },
+  },
+  plugins: [],
 });
