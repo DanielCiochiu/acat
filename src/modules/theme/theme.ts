@@ -5,17 +5,17 @@ import { Module } from '../../types/Module.ts'
  * for the module to correctly register into the application
  */
 export class Theme implements Module {
-    initialize(): void {  
+    initialize(): void {
         const savedTheme = localStorage.getItem("theme") as "white" | "dark";
         if (!savedTheme) localStorage.setItem("theme", "white");
         this.setTheme(savedTheme);
-        
+
         const toggleButton = document.getElementById("theme-button");
-    
+
         if (toggleButton) {
             const newButton = toggleButton.cloneNode(true) as HTMLElement;
-            toggleButton.replaceWith(newButton); 
-    
+            toggleButton.replaceWith(newButton);
+
             newButton.addEventListener("click", () => {
                 const currentTheme = document.documentElement.getAttribute("data-theme");
                 const newTheme = currentTheme === "dark" ? "white" : "dark";
@@ -23,7 +23,7 @@ export class Theme implements Module {
             });
         }
     }
-    
+
 
     setTheme(theme: "white" | "dark"): void {
         document.documentElement.setAttribute("data-theme", theme);
