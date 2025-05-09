@@ -57,6 +57,21 @@ export class DFAAutomata implements Automata {
         const container = new DFAMainView();
         this.app.getLayout().appBody.appendChild(container);
         this.simulator.start(container);
+
+        const observer = new MutationObserver(() => {
+            const bar = document.querySelector('.vis-network .vis-manipulation') as HTMLElement;
+            if (bar) {
+                bar.style.setProperty('background', 'var(--body-background)', 'important');
+            }
+        });
+
+        const visContainer = document.querySelector('.vis-network');
+        if (visContainer) {
+            observer.observe(visContainer, {
+                childList: true,
+                subtree: true
+            });
+        }
     }
 
     /**
