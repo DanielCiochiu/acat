@@ -1,102 +1,46 @@
-import './dialogs.less';
-import { CustomElement } from '../../core/CustomElement.ts';
-import { html } from '../../helpers/dom.ts';
-import { Module } from '../../types/Module.ts';
-import { Application } from '../../types/Application.ts';
+// src/modules/system-interaction/SystemInteraction.ts
 
-interface InfoDialogProps {
-    title: string;
-    message: string;
-}
+import { DialogModule } from "./DialogModule";
+import {Module} from "../../types/Module.ts";
 
-export class InfoDialog extends CustomElement<InfoDialogProps> {
-    static element = 'info-dialog';
-
-    template(): string | null {
-        return html`
-            <div class="dialog-overlay">
-                <div class="dialog-box">
-                    <h2>${this.props.title}</h2>
-                    <p>${this.props.message}</p>
-                    <button id="ok-button">OK</button>
-                </div>
-            </div>
-        `;
-    }
-
-    connectedCallback() {
-        const okButton = this.querySelector<HTMLButtonElement>('#ok-button');
-        if (okButton) {
-            okButton.addEventListener('click', () => this.remove());
-        }
-    }
-}
-
-export class InputDialog extends CustomElement {
-    static element = 'input-dialog';
-
-    public promise: Promise<string | null>;
-    private _resolve!: (value: string | null) => void;
+/**
+ * SystemInteraction module that serves as the entry point for dialog functionality
+ */
+export class SystemInteraction implements Module {
+    private dialogModule: DialogModule;
 
     constructor() {
-        super();
-        this.promise = new Promise<string | null>(resolve => {
-            this._resolve = resolve;
-        });
+        this.dialogModule = new DialogModule();
     }
 
-    template(): string | null {
-        return html`
-            <div class="dialog-overlay">
-                <div class="dialog-box">
-                    <p>Please enter input:</p>
-                    <input type="text" id="user-input" />
-                    <div class="dialog-buttons">
-                        <button id="submit-button">Submit</button>
-                        <button id="cancel-button">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        `;
+    /**
+     * Initialize the module
+     */
+    initialize(): void {
+        console.log('System Interaction module initialized');
+        this.dialogModule.initialize();
     }
 
-    connectedCallback() {
-        const submitButton = this.querySelector<HTMLButtonElement>('#submit-button');
-        const cancelButton = this.querySelector<HTMLButtonElement>('#cancel-button');
-        const inputField = this.querySelector<HTMLInputElement>('#user-input');
-
-        if (submitButton) {
-            submitButton.addEventListener('click', () => {
-                const value = inputField?.value || '';
-                this._resolve(value);
-                this.remove();
-            });
-        }
-
-        if (cancelButton) {
-            cancelButton.addEventListener('click', () => {
-                this._resolve(null);
-                this.remove();
-            });
-        }
-    }
-}
-
-export class SystemInteraction implements Module {
-    private app!: Application;
-
-    initialize(app: Application): void {
-        this.app = app;
-    }
-
+    /**
+     * Display an information dialog with a title and message
+     * Replacement for alert()
+     * @param title The dialog title
+     * @param message The message to display
+     */
     showInfo(title: string, message: string): void {
-        const dialog = new InfoDialog({ title, message });
-        this.app.getLayout().appBody.appendChild(dialog);
+        this.dialogModule.showInfo(title, message);
     }
 
-    requestInput(): Promise<string | null> {
-        const dialog = new InputDialog();
-        this.app.getLayout().appBody.appendChild(dialog);
-        return dialog.promise;
+    /**
+     * Request input from the user
+     * Replacement for prompt()
+     * @param title The prompt message
+     * @returns A Promise that resolves to the user's input or null if canceled
+     */
+    requestInput(title: string): Promise<string | null> {
+        return this.dialogModule.requestInput(title);
     }
 }
+
+// Export a singleton instance for easy access
+export const systemInteraction = new SystemInteraction();

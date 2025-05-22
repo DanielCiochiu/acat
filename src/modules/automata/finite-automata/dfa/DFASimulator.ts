@@ -2,32 +2,33 @@ import { Network, DataSet, Node, Edge } from 'vis-network/standalone';
 import { DFAAutomata } from './DFAAutomata.ts';
 import { DFAMainView } from './views/DFAMainView.ts';
 import { DFAModel, State } from './DFAModel.ts';
+import { systemInteraction } from "../../../system-interaction/SystemInteraction";
+
 /**
- * Does the actual simulation of the Deterministic Finite Automata
- */
+* Does the actual simulation of the Deterministic Finite Automata
+*/
 export class DFASimulator {
-    // the simulator view
-    protected mainView: DFAMainView | null = null;
+// the simulator view
+protected mainView: DFAMainView | null = null;
 
-    // references the network of states
-    protected network: Network | null = null;
+// references the network of states
+protected network: Network | null = null;
 
-    // references the DFAModel
-    protected model: DFAModel = new DFAModel();
+// references the DFAModel
+protected model: DFAModel = new DFAModel();
 
-    // @ts-ignore
-    protected currentTimeout: NodeJS.Timeout;
+// @ts-ignore
+protected currentTimeout: NodeJS.Timeout;
 
-    // New variables for step-by-step module
+// New variables for step-by-step module
+protected stepByStepInput: string = '';
+protected currentIndex: number = 0;
+protected stepByStepActive: boolean = false;
 
-    protected stepByStepInput: string = '';
-    protected currentIndex: number = 0;
-    protected stepByStepActive: boolean = false;
-
-    /**
-     * The constructor receives the Automata instance
-     */
-    constructor(protected automata: DFAAutomata) {}
+/**
+* The constructor receives the Automata instance
+*/
+constructor(protected automata: DFAAutomata) {}
 
     /**
      * Returns access to the DFA Model
@@ -82,7 +83,7 @@ export class DFASimulator {
 
         const input = this.mainView!.getTestInput();
         if (input.length === 0) {
-            alert('Please type the input for the DFA in the top left box.');
+            systemInteraction.showInfo('Input Required', 'Please type the input for the DFA in the top left box.');
             return;
         }
 
@@ -157,7 +158,7 @@ export class DFASimulator {
             // Retrieve the input from the UI.
             this.stepByStepInput = this.mainView!.getTestInput();
             if (!this.stepByStepInput || this.stepByStepInput.length === 0) {
-                alert('Please type the input for the DFA in the top left box.');
+                systemInteraction.showInfo('Input Required', 'Please type the input for the DFA in the top left box.');
                 return;
             }
 
@@ -241,11 +242,11 @@ export class DFASimulator {
     /**
      * Invoked when a new edge has been added
      */
-    protected edgeAdded = (edgeData: Edge, callback: (edge: Edge) => void) => {
+    protected edgeAdded = async (edgeData: Edge, callback: (edge: Edge) => void) => {
         // requesting the character that will validate next state
-        const character = prompt('Enter the transition character:');
+        const character = await systemInteraction.requestInput('Enter the transition character:');
         if (!character) {
-            alert('Aborting because no character was inserted');
+            systemInteraction.showInfo('Operation Cancelled', 'No character was inserted');
             return;
         }
 
